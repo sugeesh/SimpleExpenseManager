@@ -22,17 +22,17 @@ import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Transaction;
 /**
  * Created by Neo_ on 12/5/2015.
  */
-public class PersistentTransactionDAO extends SQLiteOpenHelper implements TransactionDAO{
-    public static final String DATABASE_NAME = "130079C";
-    private static final int DATABASE_VERSION = 1;
+public class PersistentTransactionDAO implements TransactionDAO{
     public static final String TABLE_NAME = "MyTransaction";
     public static final String DATE = "transaction_date";
     public static final String ACCOUNTNO = "transaction_accountNo";
     public static final String EXPENSETYPE = "transaction_expenseType";
     public static final String AMOUNT = "transaction_amount";
 
-    public PersistentTransactionDAO(Context context) {
-        super(context, DATABASE_NAME,null, DATABASE_VERSION);
+    private SQLiteOpenHelper databaseObject = null;     // database connecting object
+
+    public PersistentTransactionDAO(SQLiteOpenHelper sqLiteOpenHelper) {
+        this.databaseObject = sqLiteOpenHelper;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class PersistentTransactionDAO extends SQLiteOpenHelper implements Transa
                 expense = 0;
                 break;
         }
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = databaseObject.getWritableDatabase();
         ContentValues values = new ContentValues();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm/dd/yyyy");
         values.put(DATE, simpleDateFormat.format(date));
@@ -61,7 +61,7 @@ public class PersistentTransactionDAO extends SQLiteOpenHelper implements Transa
     public List<Transaction> getAllTransactionLogs() {
         List<Transaction> transactionList = new ArrayList<Transaction>();
         String selectQuery = "SELECT * FROM "+TABLE_NAME;
-        SQLiteDatabase databaseReadableObject = this.getReadableDatabase();
+        SQLiteDatabase databaseReadableObject = databaseObject.getReadableDatabase();
         Cursor cursor = databaseReadableObject.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
             do {
@@ -107,12 +107,4 @@ public class PersistentTransactionDAO extends SQLiteOpenHelper implements Transa
 
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-    }
 }

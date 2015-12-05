@@ -4,6 +4,7 @@ import lk.ac.mrt.cse.dbs.simpleexpensemanager.MyApplication;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.exception.ExpenseManagerException;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.AccountDAO;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.TransactionDAO;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.db.DBConnection;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.impl.InMemoryAccountDAO;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.impl.InMemoryTransactionDAO;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.impl.PersistentAccountDAO;
@@ -21,11 +22,12 @@ public class PersistentExpenseManager extends ExpenseManager{
 
     public void setup() throws ExpenseManagerException {
 
+        DBConnection dbConnection = new DBConnection(MyApplication.getCustomAppContext());  // Database connecting object
 
-        AccountDAO persistenceAccountDAO = new PersistentAccountDAO(MyApplication.getCustomAppContext());
+        AccountDAO persistenceAccountDAO = new PersistentAccountDAO(dbConnection);
         setAccountsDAO(persistenceAccountDAO);
 
-        TransactionDAO persistantTransactionDAO = new PersistentTransactionDAO(MyApplication.getCustomAppContext());
+        TransactionDAO persistantTransactionDAO = new PersistentTransactionDAO(dbConnection);
         setTransactionsDAO(persistantTransactionDAO);
 
         // dummy data
