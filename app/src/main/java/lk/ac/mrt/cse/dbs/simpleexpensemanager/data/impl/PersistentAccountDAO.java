@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.ExpenseType;
  * Created by Neo_ on 12/5/2015.
  */
 public class PersistentAccountDAO extends SQLiteOpenHelper implements AccountDAO{
-    public static final String DATABASE_NAME = "MyDb1.db";
+    public static final String DATABASE_NAME = "130079C";
     private static final int DATABASE_VERSION = 1;
     public static final String TABLE_NAME = "Account";
     public static final String ACCOUNT_NO = "Account_no";
@@ -110,11 +111,11 @@ public class PersistentAccountDAO extends SQLiteOpenHelper implements AccountDAO
     @Override
     public void updateBalance(String accountNo, ExpenseType expenseType, double amount) throws InvalidAccountException {
         Account account = null;
-        String selectQuery = "SELECT "+ACCOUNT_NO+" FROM "+TABLE_NAME +" WHERE "+ACCOUNT_NO+" = "+accountNo;
-        SQLiteDatabase databaseReadableObject = this.getReadableDatabase();
-        Cursor cursor = databaseReadableObject.rawQuery(selectQuery, null);
+        String selectQuery = "SELECT * FROM "+TABLE_NAME +" WHERE "+ACCOUNT_NO+" = '"+accountNo+"'";
+        SQLiteDatabase databaseWritableObject = this.getWritableDatabase();
+        Cursor cursor = databaseWritableObject.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
-            account = new Account(cursor.getColumnName(0),cursor.getColumnName(1),cursor.getColumnName(2),Double.parseDouble(cursor.getColumnName(3)));
+            account = new Account(cursor.getString(0),cursor.getString(1),cursor.getString(2),Double.parseDouble(cursor.getString(3)));
         }
 
         switch (expenseType) {
@@ -131,7 +132,8 @@ public class PersistentAccountDAO extends SQLiteOpenHelper implements AccountDAO
         values.put(BALANCE, account.getBalance());
 
         // updating row
-        databaseReadableObject.update(TABLE_NAME, values, ACCOUNT_NO + " = ?",new String[] { String.valueOf(accountNo) });
+        databaseWritableObject.update(TABLE_NAME, values, ACCOUNT_NO + " = ?",new String[] { String.valueOf(accountNo) });
+        databaseWritableObject.close();
     }
 
     @Override
@@ -140,6 +142,15 @@ public class PersistentAccountDAO extends SQLiteOpenHelper implements AccountDAO
                 + ACCOUNT_NO + " TEXT PRIMARY KEY, " +BANK+ " TEXT, "
                 +ACCOUNT_HOLDER+ " TEXT," +BALANCE+" DOUBLE"+ ");";
         db.execSQL(MyDatabase);
+
+        String myDatabase2 = "CREATE TABLE MyTransaction (" +
+                "   transaction_date            TEXT     NOT NULL," +
+                "   transaction_accountNo       TEXT    NOT NULL," +
+                "   transaction_expenseType     INT     NOT NULL," +
+                "   transaction_amount        REAL  );";
+
+        db.execSQL(myDatabase2);
+
 
     }
 

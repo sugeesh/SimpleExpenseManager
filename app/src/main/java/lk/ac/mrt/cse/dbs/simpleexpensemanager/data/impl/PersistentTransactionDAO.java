@@ -23,13 +23,13 @@ import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Transaction;
  * Created by Neo_ on 12/5/2015.
  */
 public class PersistentTransactionDAO extends SQLiteOpenHelper implements TransactionDAO{
-    public static final String DATABASE_NAME = "MyDb1.db";
+    public static final String DATABASE_NAME = "130079C";
     private static final int DATABASE_VERSION = 1;
-    public static final String TABLE_NAME = "Transaction";
-    public static final String DATE = "date";
-    public static final String ACCOUNTNO = "accountNo";
-    public static final String EXPENSETYPE = "expenseType";
-    public static final String AMOUNT = "amount";
+    public static final String TABLE_NAME = "MyTransaction";
+    public static final String DATE = "transaction_date";
+    public static final String ACCOUNTNO = "transaction_accountNo";
+    public static final String EXPENSETYPE = "transaction_expenseType";
+    public static final String AMOUNT = "transaction_amount";
 
     public PersistentTransactionDAO(Context context) {
         super(context, DATABASE_NAME,null, DATABASE_VERSION);
@@ -46,14 +46,13 @@ public class PersistentTransactionDAO extends SQLiteOpenHelper implements Transa
                 expense = 0;
                 break;
         }
-
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DATE, date.toString());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("mm/dd/yyyy");
+        values.put(DATE, simpleDateFormat.format(date));
         values.put(ACCOUNTNO, accountNo);
         values.put(EXPENSETYPE, expense);
         values.put(AMOUNT, amount);
-
         db.insert(TABLE_NAME, null, values);
         db.close();
     }
@@ -110,18 +109,10 @@ public class PersistentTransactionDAO extends SQLiteOpenHelper implements Transa
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String MyDatabase =     "CREATE TABLE " +TABLE_NAME+ "(" +
-                DATE+" TEXT  NOT NULL," +
-                ACCOUNTNO+" TEXT    NOT NULL," +
-                EXPENSETYPE+" INT     NOT NULL," +
-                AMOUNT+ " REAL  NOT NULL" +
-                ");";
-        db.execSQL(MyDatabase);
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        onCreate(db);
     }
 }

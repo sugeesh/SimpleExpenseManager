@@ -1,5 +1,6 @@
 package lk.ac.mrt.cse.dbs.simpleexpensemanager.control;
 
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.MyApplication;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.exception.ExpenseManagerException;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.AccountDAO;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.TransactionDAO;
@@ -14,21 +15,24 @@ import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Account;
  */
 public class PersistentExpenseManager extends ExpenseManager{
 
-
+    public PersistentExpenseManager() throws ExpenseManagerException {
+        setup();
+    }
 
     public void setup() throws ExpenseManagerException {
 
-    //    TransactionDAO persistantTransactionDAO = new PersistentTransactionDAO(lk.ac.mrt.cse.dbs.simpleexpensemanager.ui.MyApplication.getCustomAppContext());
-      //  setTransactionsDAO(persistantTransactionDAO);
 
-     //   AccountDAO persistenceAccountDAO = new PersistentAccountDAO();
-      //  setAccountsDAO(persistenceAccountDAO);
+        AccountDAO persistenceAccountDAO = new PersistentAccountDAO(MyApplication.getCustomAppContext());
+        setAccountsDAO(persistenceAccountDAO);
+
+        TransactionDAO persistantTransactionDAO = new PersistentTransactionDAO(MyApplication.getCustomAppContext());
+        setTransactionsDAO(persistantTransactionDAO);
 
         // dummy data
-        Account dummyAcct1 = new Account("12345A", "Yoda Bank", "Anakin Skywalker", 10000.0);
-        Account dummyAcct2 = new Account("78945Z", "Clone BC", "Obi-Wan Kenobi", 80000.0);
-        getAccountsDAO().addAccount(dummyAcct1);
-        getAccountsDAO().addAccount(dummyAcct2);
+     //   Account dummyAcct1 = new Account("12345", "Yoda Bank", "Anakin Skywalker", 10000.0);
+     //   Account dummyAcct2 = new Account("78945", "Clone BC", "Obi-Wan Kenobi", 80000.0);
+      //  getAccountsDAO().addAccount(dummyAcct1);
+      //  getAccountsDAO().addAccount(dummyAcct2);
 
     }
 }
