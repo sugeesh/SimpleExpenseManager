@@ -30,7 +30,7 @@ public class DBConnection extends SQLiteOpenHelper {
                 "   transaction_accountNo       TEXT    NOT NULL," +
                 "   transaction_expenseType     INT     NOT NULL," +
                 "   transaction_amount    REAL ," +
-                "   PRIMARY KEY(transaction_date,transaction_accountNo,expenseType,transaction_amount)," +
+                "   PRIMARY KEY(transaction_date,transaction_accountNo,transaction_expenseType,transaction_amount)," +
                 "   FOREIGN KEY(transaction_accountNo) REFERENCES Account(Account_no)" +
                 ");";
 
